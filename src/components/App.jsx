@@ -18,26 +18,27 @@ export class App extends Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    const { searchItem, page, perPage, availablePages } = this.state;
+    const { searchItem, page, perPage } = this.state;
 
     if (prevState.searchItem !== searchItem || prevState.page !== page) {
       try {
         this.setState({ isLoad: true, error: false });
         const cleanName = searchItem.split('/').pop();
         const imagesData = await searchByName(cleanName, page);
-        this.setState(prevState => {
-          return {
-            images: [...prevState.images, ...imagesData.hits],
-            availablePages: Math.ceil(imagesData.totalHits / perPage),
-          };
-        });
+
+        if (imagesData.hits.length > 0) {
+          this.setState(prevState => {
+            return {
+              images: [...prevState.images, ...imagesData.hits],
+              availablePages: Math.ceil(imagesData.totalHits / perPage),
+            };
+          });
+          toast.success('Successfully found!');
+        } else {
+          toast.error('Nothing found.');
+        }
       } catch (error) {
         this.setState({ error: true });
-        if (availablePages === 0) {
-          toast.error(
-            'Nothing found. Check the correctness of the search word.'
-          );
-        }
       } finally {
         this.setState({ isLoad: false });
       }
@@ -57,6 +58,15 @@ export class App extends Component {
   onLoadMore = () => {
     this.setState(prevState => {
       return { page: prevState.page + 1 };
+    });
+
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
     });
   };
 

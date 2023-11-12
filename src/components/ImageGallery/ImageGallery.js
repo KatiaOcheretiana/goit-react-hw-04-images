@@ -10,6 +10,7 @@ export const ImageGallery = ({ items }) => {
             key={item.id}
             webformatURL={item.webformatURL}
             largeImageURL={item.largeImageURL}
+            alt={item.tags}
           />
         );
       })}

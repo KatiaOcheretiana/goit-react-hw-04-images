@@ -16,19 +16,16 @@ export class ImageGalleryItem extends Component {
   };
 
   render() {
-    const { webformatURL, largeImageURL } = this.props;
+    const { webformatURL, largeImageURL, tags } = this.props;
     const { isModalOpen } = this.state;
     return (
       <GalleryItem>
-        <img
-          src={webformatURL}
-          alt="by your request"
-          onClick={this.openModal}
-        />
+        <img src={webformatURL} alt={tags} onClick={this.openModal} />
         <Modal
           url={largeImageURL}
           isModalOpen={isModalOpen}
           closeModal={this.closeModal}
+          alt={tags}
         />
       </GalleryItem>
     );
