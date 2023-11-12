@@ -11,12 +11,14 @@ export class App extends Component {
     searchItem: '',
     images: [],
     page: 1,
+    perPage: 12,
     isLoad: false,
     error: false,
+    availablePages: 0,
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    const { searchItem, page } = this.state;
+    const { searchItem, page, perPage, availablePages } = this.state;
 
     if (prevState.searchItem !== searchItem || prevState.page !== page) {
       try {
@@ -24,12 +26,18 @@ export class App extends Component {
         const cleanName = searchItem.split('/').pop();
         const imagesData = await searchByName(cleanName, page);
         this.setState(prevState => {
-          return { images: [...prevState.images, ...imagesData] };
+          return {
+            images: [...prevState.images, ...imagesData.hits],
+            availablePages: Math.ceil(imagesData.totalHits / perPage),
+          };
         });
-        toast.success('Successfully found!');
       } catch (error) {
         this.setState({ error: true });
-        toast.error('Nothing found. Check the correctness of the search word.');
+        if (availablePages === 0) {
+          toast.error(
+            'Nothing found. Check the correctness of the search word.'
+          );
+        }
       } finally {
         this.setState({ isLoad: false });
       }
@@ -60,15 +68,18 @@ export class App extends Component {
       paddingBottom: '24px',
     };
 
+    const { isLoad, images, error, page, availablePages } = this.state;
+
     return (
       <div style={containerStyle}>
         <Searchbar onSubmit={this.onSubmitSearch} />
-        {this.state.isLoad ? (
-          <Loader />
-        ) : (
-          <ImageGallery items={this.state.images} />
+        {error && (
+          <b>Oops! Something went wrong! Please try reloading this page! 🥹</b>
         )}
-        {this.state.images.length > 0 && <Button onClick={this.onLoadMore} />}
+        {isLoad ? <Loader /> : <ImageGallery items={images} />}
+        {page !== availablePages && images.length !== 0 && (
+          <Button onClick={this.onLoadMore} />
+        )}
         <Toaster />
       </div>
     );

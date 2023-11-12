@@ -5,5 +5,5 @@ export const searchByName = async (item, page) => {
   const perPage = '12';
   const apiURL = `https://pixabay.com/api/?q=${item}&page=${page}&key=${key}&image_type=photo&orientation=horizontal&per_page=${perPage}`;
   const result = await axios.get(apiURL);
-  return result.data.hits;
+  return result.data;
 };
