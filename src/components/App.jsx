@@ -81,7 +81,8 @@ export class App extends Component {
         {error && (
           <b>Oops! Something went wrong! Please try reloading this page! 🥹</b>
         )}
-        {isLoad ? <Loader /> : <ImageGallery items={images} />}
+        {isLoad && <Loader />}
+        {images.length > 0 && <ImageGallery items={images} />}
         {page !== availablePages && images.length !== 0 && (
           <Button onClick={this.onLoadMore} />
         )}
