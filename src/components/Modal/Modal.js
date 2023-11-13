@@ -24,11 +24,11 @@ const customStyles = {
   },
 };
 
-export const Modal = ({ isModalOpen, closeModal, url, alt }) => {
+export const Modal = ({ toggleStateOfModal, isModalOpen, url, alt }) => {
   return (
     <ReactModal
       isOpen={isModalOpen}
-      onRequestClose={closeModal}
+      onRequestClose={toggleStateOfModal}
       style={customStyles}
       contentLabel={'Image Modal'}
     >
