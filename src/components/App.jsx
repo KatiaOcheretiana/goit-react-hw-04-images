@@ -5,10 +5,12 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
 import toast, { Toaster } from 'react-hot-toast';
+import { nanoid } from 'nanoid';
 
 export class App extends Component {
   state = {
     searchItem: '',
+    randomId: 0,
     images: [],
     page: 1,
     perPage: 12,
@@ -18,13 +20,16 @@ export class App extends Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    const { searchItem, page, perPage } = this.state;
+    const { searchItem, page, perPage, randomId } = this.state;
 
-    if (prevState.searchItem !== searchItem || prevState.page !== page) {
+    if (
+      prevState.searchItem !== searchItem ||
+      prevState.page !== page ||
+      prevState.randomId !== randomId
+    ) {
       try {
         this.setState({ isLoad: true, error: false });
-        const cleanName = searchItem.split('/').pop();
-        const imagesData = await searchByName(cleanName, page);
+        const imagesData = await searchByName(searchItem, page);
 
         if (imagesData.hits.length > 0) {
           this.setState(prevState => {
@@ -45,13 +50,12 @@ export class App extends Component {
     }
   }
 
-  onSubmitSearch = e => {
-    e.preventDefault();
-    const searchName = e.target.elements.itemToSearch.value;
+  onSubmitSearch = searchName => {
     this.setState({
-      searchItem: `${Date.now()}/${searchName}`,
+      searchItem: searchName,
       page: 1,
       images: [],
+      randomId: nanoid(),
     });
   };
 

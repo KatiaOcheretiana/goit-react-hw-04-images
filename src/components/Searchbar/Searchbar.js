@@ -9,7 +9,13 @@ import { FcCameraIdentification } from 'react-icons/fc';
 export const Searchbar = ({ onSubmit }) => {
   return (
     <SearchField>
-      <SearchForm onSubmit={onSubmit}>
+      <SearchForm
+        onSubmit={e => {
+          e.preventDefault();
+          const searchName = e.target.elements.itemToSearch.value;
+          onSubmit(searchName);
+        }}
+      >
         <SearchBtn type="submit">
           <span>
             <FcCameraIdentification size="30" />
@@ -18,6 +24,7 @@ export const Searchbar = ({ onSubmit }) => {
 
         <SearcInput
           name="itemToSearch"
+          required
           type="text"
           autoComplete="off"
           autoFocus
